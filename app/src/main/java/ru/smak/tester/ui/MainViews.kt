@@ -1,6 +1,6 @@
 package ru.smak.tester.ui
 
-import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +36,7 @@ fun TestCard(
     cardInfo: Test,
     modifier: Modifier = Modifier,
     background: Color = Color.Unspecified,
+    isAnswered: Boolean = false,
     onAnswer: (String)->Unit = {},
 ){
     var userInput by remember{ mutableStateOf("") }
@@ -62,6 +63,7 @@ fun TestCard(
                     value = userInput,
                     onValueChange = { newValue -> userInput = newValue },
                     modifier = Modifier.weight(0.3f).padding(8.dp),
+                    enabled = !isAnswered ,
                     singleLine = true,
                     textStyle = TextStyle(
                         fontSize = 42.sp,
@@ -72,7 +74,10 @@ fun TestCard(
             }
             IconButton(onClick = {
                 onAnswer(userInput)
-            }) {
+            },
+                enabled = !isAnswered
+
+            ) {
                 Icon(
                     painterResource(R.drawable.twotone_done_outline_24),
                     tint = Color.Green,
@@ -88,5 +93,35 @@ fun TestCard(
 fun TestCardPreview(){
     TesterTheme {
         TestCard(cardInfo = Test())
+    }
+}
+
+@Composable
+fun Results(
+    text: String,
+    modifier: Modifier = Modifier,
+){
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center,
+        )
+    }
+
+}
+
+@Composable
+@Preview
+fun ResultsPreview(){
+    TesterTheme {
+        Results(
+            "Ваш результат: 4 из 5",
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }

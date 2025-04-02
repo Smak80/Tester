@@ -12,12 +12,14 @@ import ru.smak.tester.models.Test
 
 class MainViewModel : ViewModel(){
 
-    private val testsCount = 5
+    val testsCount = 5
 
     val cards: MutableList<Test> = mutableListOf()
     var activeTaskId by mutableIntStateOf(0)
     var finished by mutableStateOf(false)
     val cardsBackground = mutableStateListOf<MutableState<Color>>()
+    val result: Int
+        get() = cards.count { it.isAnswerCorrect == true }
 
     init{
         createNewTests()
@@ -25,7 +27,8 @@ class MainViewModel : ViewModel(){
 
     fun createNewTests(){
         cards.clear()
-        repeat(5) {
+        cardsBackground.clear()
+        repeat(testsCount) {
             cards.add(Test())
         }
         cardsBackground.add(mutableStateOf(Color.Unspecified))
@@ -38,7 +41,7 @@ class MainViewModel : ViewModel(){
             cardsBackground[activeTaskId].value = when (cards[activeTaskId].isAnswerCorrect) {
                 true -> Color(0f, 1f, 0f, 0.3f)
                 false -> Color(1f, 0f, 0f, 0.3f)
-                else -> Color.Unspecified
+                null -> Color.Unspecified
             }
             if (activeTaskId < testsCount - 1) {
                 activeTaskId++
